@@ -1,5 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.IO;
 
 namespace ATM
@@ -7,25 +10,25 @@ namespace ATM
     //Francesca and Julia wrote this class
     public class Account
     {
-        public string name;
-        public static int id = 0;
-        public int pin;
-        public decimal balance;
+        public int accNum;
+        private string name;
+        private int pin;
+        private decimal balance;
 
-        public Account(string n, int p)
+        public Account(int AccountNumber, string n, int p)
         {
+            accNum = AccountNumber;
             name = n;
             pin = p;
             balance = 0;
-            id++;
         }
 
-        public Account(string n, int p, decimal b, int i)
+        public Account(int AccountNumber, string n, int p, decimal b)
         {
+            accNum = AccountNumber;
             name = n;
             pin = p;
             balance = b;
-            id = i;
         }
 
         public void deposit(decimal amount)
@@ -51,9 +54,9 @@ namespace ATM
             return balance;
         }
 
-        public int get_id()
+        public string get_name()
         {
-            return id;
+            return name;
         }
 
         public Boolean verify_pin(int inputted_pin)
@@ -66,7 +69,7 @@ namespace ATM
 
         public string toString()
         {
-            string account_string = $"{name}\t{pin.ToString()}\t{id.ToString()}\t{balance.ToString()}";
+            string account_string = $"{accNum.ToString()}\t{name}\t{pin.ToString()}\t{balance.ToString()}";
             return account_string;
         }
     }
@@ -74,28 +77,50 @@ namespace ATM
     //Francesca and Julia wrote this class
     public class Bank
     {
-        Dictionary<int,Account> accounts = new Dictionary<int,Account>();
+        Dictionary<int, Account> accounts = new Dictionary<int, Account>();
+
+        public Bank()
+        {
+            Account tester = new Account(1, "John Snow", 1234);
+            decimal x = 500.2m;
+            tester.deposit(x);
+            add_account(tester);
+        }
 
         public void add_account(Account acc)
         {
-            accounts[acc.get_id()] = acc;
+            accounts[acc.accNum] = acc;
         }
 
-        public Account get_account_by_id(int x)
+        public Account get_account_by_number(int AccountNumber)
         {
-            return accounts[x];
+            try
+            {
+                return accounts[AccountNumber];
+            }
+            catch
+            {
+                return null;
+            }
         }
-
+       
         public void update_file()
         {
-            StreamWriter sw = new StreamWriter("BankRecords.txt",false);
-            foreach(KeyValuePair<int,Account> entry in accounts)
+            StreamWriter sw = new StreamWriter("BankRecords.txt", false);
+            foreach (KeyValuePair<int, Account> entry in accounts)
             {
                 sw.WriteLine(entry.Value.toString());
             }
-            sw.Close(); 
+            sw.Close();
         }
+        //####################
+        /* I rewrote how the dictionary stored accounts; storing account numbers
+         * as the keys rather than an arbitrary id.
+         * Keep this in mind in case it affects how you rewrite the restore_file() method
+        */
+        //####################
 
+        /*
         public void restore_file()
         {
             StreamReader sr = new StreamReader("BankRecords.txt");
@@ -104,25 +129,25 @@ namespace ATM
             {
                 int i = 0;
                 int j = 0;
-                while (line[i] != "\t") {}
+                while (line[i] != "\t") { }
                 string name = line[0:i];
                 i++;
                 j = i;
-                while (line[i] != "\t") {}
+                while (line[i] != "\t") { }
                 int pin = Convert.ToInt32(line[j: i]);
                 i++;
                 j = i;
-                while (line[i] != "\t") {}
+                while (line[i] != "\t") { }
                 int id = Convert.ToInt32(line[j: i]);
                 i++;
                 j = i;
-                while (line[i] != "\t") {}
+                while (line[i] != "\t") { }
                 decimal balance = Convert.ToDecimal(line[j: i]);
 
                 Account new_account = Account(name, pin, balance, id);
                 accounts[new_account.get_id()] = new_account;
-            }
+            }*/
         }
     }
 
-}
+
