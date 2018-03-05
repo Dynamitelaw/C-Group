@@ -59,6 +59,11 @@ namespace ATM
             return name;
         }
 
+        public int get_acc_num()
+        {
+            return accNum;
+        }
+        
         public Boolean verify_pin(int inputted_pin)
         {
             if (inputted_pin == pin)
@@ -113,14 +118,7 @@ namespace ATM
             }
             sw.Close();
         }
-        //####################
-        /* I rewrote how the dictionary stored accounts; storing account numbers
-         * as the keys rather than an arbitrary id.
-         * Keep this in mind in case it affects how you rewrite the restore_file() method
-        */
-        //####################
 
-        /*
         public void restore_file()
         {
             StreamReader sr = new StreamReader("BankRecords.txt");
@@ -129,25 +127,24 @@ namespace ATM
             {
                 int i = 0;
                 int j = 0;
-                while (line[i] != "\t") { }
-                string name = line[0:i];
+                while (String.Equals(line[i].ToString(), "\t", StringComparison.Ordinal) { }
+                int acc_num = Convert.ToInt32(line.Substring(0, i));
                 i++;
                 j = i;
-                while (line[i] != "\t") { }
-                int pin = Convert.ToInt32(line[j: i]);
+                while (String.Equals(line[i].ToString(), "\t", StringComparison.Ordinal) { }
+                string name = line.Substring(j, i);
                 i++;
                 j = i;
-                while (line[i] != "\t") { }
-                int id = Convert.ToInt32(line[j: i]);
+                while (String.Equals(line[i].ToString(), "\t", StringComparison.Ordinal) { }
+                int pin = Convert.ToInt32(line.Substring(j, i));
                 i++;
                 j = i;
-                while (line[i] != "\t") { }
-                decimal balance = Convert.ToDecimal(line[j: i]);
+                while (String.Equals(line[i].ToString(), "\t", StringComparison.Ordinal) { }
+                decimal balance = Convert.ToDecimal(line.Substring(j, i));
 
-                Account new_account = Account(name, pin, balance, id);
-                accounts[new_account.get_id()] = new_account;
-            }*/
+                Account new_account = new Account(acc_num, name, pin, balance);
+                accounts[new_account.get_acc_num()] = new_account;
+            }
         }
     }
-
 
