@@ -63,7 +63,7 @@ namespace ATM
         {
             return accNum;
         }
-        
+
         public Boolean verify_pin(int inputted_pin)
         {
             if (inputted_pin == pin)
@@ -74,7 +74,7 @@ namespace ATM
 
         public string toString()
         {
-            string account_string = $"{accNum.ToString()}\t{name}\t{pin.ToString()}\t{balance.ToString()}";
+            string account_string = $"{accNum.ToString()},{name},{pin.ToString()},{balance.ToString()}";
             return account_string;
         }
     }
@@ -86,10 +86,7 @@ namespace ATM
 
         public Bank()
         {
-            Account tester = new Account(1, "John Snow", 1234);
-            decimal x = 500.2m;
-            tester.deposit(x);
-            add_account(tester);
+           
         }
 
         public void add_account(Account acc)
@@ -108,7 +105,7 @@ namespace ATM
                 return null;
             }
         }
-       
+
         public void update_file()
         {
             StreamWriter sw = new StreamWriter("BankRecords.txt", false);
@@ -121,30 +118,30 @@ namespace ATM
 
         public void restore_file()
         {
+            /*
+             * Restores account data from text file
+             */
+
             StreamReader sr = new StreamReader("BankRecords.txt");
             string[] lines = System.IO.File.ReadAllLines("BankRecords.txt");
             foreach (string line in lines)
             {
-                int i = 0;
-                int j = 0;
-                while (String.Equals(line[i].ToString(), "\t", StringComparison.Ordinal) { }
-                int acc_num = Convert.ToInt32(line.Substring(0, i));
-                i++;
-                j = i;
-                while (String.Equals(line[i].ToString(), "\t", StringComparison.Ordinal) { }
-                string name = line.Substring(j, i);
-                i++;
-                j = i;
-                while (String.Equals(line[i].ToString(), "\t", StringComparison.Ordinal) { }
-                int pin = Convert.ToInt32(line.Substring(j, i));
-                i++;
-                j = i;
-                while (String.Equals(line[i].ToString(), "\t", StringComparison.Ordinal) { }
-                decimal balance = Convert.ToDecimal(line.Substring(j, i));
+                try
+                {
+                    //Seperates line into fields deliminated by commas
+                    string[] lineArray = line.Split(',');
+                    int acc_num = Convert.ToInt32(lineArray[0]);
+                    string name = lineArray[1];
+                    int pin = Convert.ToInt32(lineArray[2]);
+                    decimal balance = Convert.ToDecimal(lineArray[3]);
 
-                Account new_account = new Account(acc_num, name, pin, balance);
-                accounts[new_account.get_acc_num()] = new_account;
+                    //Adds account with specified fields to the bank dictionary
+                    Account new_account = new Account(acc_num, name, pin, balance);
+                    accounts[new_account.get_acc_num()] = new_account;
+                }
+                catch { }
             }
+            sr.Close();
         }
     }
-
+}
